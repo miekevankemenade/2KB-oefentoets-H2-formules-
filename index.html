@@ -154,6 +154,7 @@ input.asvak:focus{outline:none;box-shadow:0 0 0 3px var(--roze-licht)}
 input.asvak.goed{border-color:var(--goed);background:#eaf8f1} input.asvak.fout{border-color:var(--fout);background:#fdeced}
 @media (max-width:860px){.as-wrap{width:100%}}
 #puntMelding{min-height:2.9em;display:flex;align-items:center;justify-content:center}
+.stap.stapkop{font-weight:800;color:var(--paars);margin-top:6px}
 .graf-knoppen{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .knop.gum{display:inline-flex;align-items:center;gap:6px}
 .knop.gum[aria-pressed="true"]{background:var(--roze);border-color:var(--roze);color:#fff}
@@ -559,7 +560,7 @@ const grafK1 = () => maakGrafiek(GK1, {lijnen: [{pts: PK1.concat([PK1[0]]), kleu
 const grafK3 = () => maakGrafiek(GK3, {lijnen: [{pts: [[-2, 16], [5.7, -7.1]], kleur: PAARS, label: '1', labelAt: [4.8, -9.5]}, {pts: [[-2, -13], [5, 29]], kleur: ROZE, label: '2', labelAt: [3.4, 16]}]});
 const grafK4 = () => maakGrafiek(GK4, {lijnen: [{pts: PK4, kleur: ROZE}], stippen: PK4});
 const grafK5 = () => maakGrafiek(GK5, {lijnen: [{pts: PJ, kleur: PAARS, label: 'Jonas', labelAt: [5.1, 55]}, {pts: PV, kleur: ROZE, label: 'Valerie', labelAt: [2.5, 25]}]});
-const grafK7 = () => maakGrafiek(GK7, {lijnen: [{pts: [[0, 20], [6, -16]], kleur: ROZE}]});
+const grafK7 = () => maakGrafiek(Object.assign({}, GK7, {gridY: 2, gridX: 0.5}), {lijnen: [{pts: [[0, 20], [6, -16]], kleur: ROZE}]});
 
 const F3 = [['A', '10 − 3x = y'], ['B', '3x + 10 = y'], ['C', '6x − 1 = y'], ['D', '6(x + 1) − 5 = y']];
 const F6 = [['A', 'y = 3(x − 1)'], ['B', 'y = −3 + x'], ['C', 'y = 2x − 3'], ['D', 'y = −3 + 2 × x']];
@@ -639,9 +640,11 @@ const SECTIES = [
    hint: ['Vul elke hoogte in de formule in.', '20 − 6 × 1 = …', 'Elke km komt er 6 af.'], uitleg: ['0 km: 20 − 0 = 20', '1 km: 20 − 6 = 14', 'Elke keer 6 eraf: 8, 2, −4, −10, −16']},
   {id: '7b2', nr: '7', deel: 'b ②', ctx: 'c7', dom: D43t, vraag: ['Teken de grafiek bij de formule.', 'Gebruik je tabel.', 'Klik op minstens 3 punten.', 'Verkeerd punt?', 'Gebruik de gum.'], type: 'grafiek', g: GK7, f: f7, min: 3, bron: ['7b1'],
    hint: ['Begin bij het punt (0, 20).', 'Negatieve temperatuur: onder de horizontale as.'], uitleg: ['Punt (0, 20)', 'Punt (3, 2)', 'Punt (6, −16)', 'Trek een rechte lijn door de punten.']},
-  {id: '7c', nr: '7', deel: 'c', ctx: 'c7g', dom: D46, vraag: ['De temperatuur is −7 °C.', 'Lees uit de grafiek af welke hoogte hierbij hoort.', 'Controleer je antwoord met de formule.'], type: 'stappen',
-   velden: [{tpl: 'Bij −7 °C hoort een hoogte van {} km.', ans: [4.5]}, {tpl: 'Controle: 20 − 6 × 4,5 = 20 − {} = {}', ans: [27, -7]}],
-   hint: ['Zoek −7 op de verticale as. Dat ligt tussen −4 en −8.', 'Ga naar rechts tot de grafiek en dan recht omhoog naar de horizontale as.', 'Je komt precies tussen twee getallen uit.'], uitleg: ['Bij −7 °C lees je 4,5 km af.', '6 × 4,5 = 27', '20 − 27 = −7. Het klopt!'], fouten: {}},
+  {id: '7c', nr: '7', deel: 'c', ctx: 'c7g', dom: D46, vraag: ['De temperatuur is −7 °C.', 'Op welke hoogte is dat?', 'Lees het af in de grafiek.', 'Controleer daarna je antwoord met de formule.'], type: 'stappen',
+   velden: [{lab: 'Stap 1: lees af in de grafiek.', soort: 'tekst'}, {tpl: 'Bij −7 °C hoort een hoogte van {} km.', ans: [4.5]},
+            {lab: 'Stap 2: controleer met de formule. Vul je hoogte in.', soort: 'tekst'}, {tpl: '20 − 6 × {} = temperatuur', ans: [4.5], invul: true}, {tpl: '20 − {} = {}', ans: [27, -7]}],
+   hint: ['Zoek −7 op de verticale as. Elk hokje is 2 graden. −7 ligt precies tussen −6 en −8.', 'Ga vanaf −7 naar rechts tot je de lijn raakt.', 'Ga dan recht omhoog naar de horizontale as. Elk klein hokje is een halve km.', 'Bij de controle moet er −7 uitkomen.'],
+   uitleg: ['Bij −7 °C lees je 4,5 km af.', 'Controle: 20 − 6 × 4,5 = temperatuur', '6 × 4,5 = 27', '20 − 27 = −7. Het klopt!'], fouten: {4: 'Afleesfout: halve km niet gezien', 5: 'Afleesfout: halve km niet gezien', 47: 'Eerst min, dan keer gerekend'}},
  ]},
  {id: 's3', titel: 'Opdracht 8', items: [
   {id: '8aA', nr: '8', deel: 'a  A', ctx: 'c8', dom: D5g, vraag: ['Schrijf formule A zo kort mogelijk.', 'F:14 − 4 × r = s'], type: 'formule', orig: '14 - 4*r = s', vars: ['r'], zonderKeer: true,
@@ -859,6 +862,7 @@ function toonVraag(it){
     const vak = (id, lab) => `<input class="inv vak" id="${id}" inputmode="decimal" autocomplete="off" aria-label="${esc(lab)}">`;
     inv.innerHTML = (it.begin ? `<div class="stap start">${fmtF(it.begin)}</div>` : '') + `<div class="stappen">${it.velden.map((v, k) => {
       if (v.as) return '';
+      if (v.soort === 'tekst') return `<div class="stap stapkop">${fmtF(v.lab)}</div>`;
       if (v.tpl){ const d = v.tpl.split('{}'); return `<div class="stap formulestap">${d.map((t, j) => fmtF(t) + (j < d.length - 1 ? vak(`a${k}_${j}`, `Stap ${k + 1}, vakje ${j + 1}`) : '')).join('')}</div>`; }
       return `<div class="stap"><label class="lab" for="a${k}">${fmtF(v.lab)}</label>${v.soort === 'keuze'
        ? `<select id="a${k}">${v.opties.map((o, j) => `<option value="${j}">${esc(o)}</option>`).join('')}</select>`
@@ -1044,6 +1048,7 @@ function controleer(it){
       if (!ok && !eerste && raw.trim() !== '') eerste = catVeld || (it.fouten && it.fouten[String(v)]) || (!isNaN(v) && Math.abs(v + ans) < 1e-9 && ans !== 0 ? 'Min-teken fout' : '');
       res.push([id, ok]); if (!ok) fout++; };
     it.velden.forEach((f, k) => {
+      if (f.soort === 'tekst') return;
       if (f.tpl || f.as){ f.ans.forEach((a, j) => getal(`a${k}_${j}`, a, f.invul && j === 0 ? 'Verkeerd getal ingevuld in de formule' : '')); return; }
       if (f.soort === 'keuze'){ const raw = w['a' + k]; const ok = +raw === f.ans; if (+raw === 0) geenKeuze++; else leeg = false; if (!ok && !eerste && +raw !== 0) eerste = 'Verkeerde keuze gemaakt'; res.push(['a' + k, ok]); if (!ok) fout++; }
       else getal('a' + k, f.ans);
