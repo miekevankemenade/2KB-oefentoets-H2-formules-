@@ -653,11 +653,6 @@ const SECTIES = [
    hint: ['5 × r schrijf je als 5r.'], uitleg: ['5 × r = 5r', '5r − 20 = s']},
   {id: '8aC', nr: '8', deel: 'a  C', ctx: 'c8', dom: D5g, vraag: ['Schrijf formule C zo kort mogelijk.', 'F:17 − 8 × r = s'], type: 'formule', orig: '17 - 8*r = s', vars: ['r'], zonderKeer: true,
    hint: ['8 × r schrijf je als 8r.'], uitleg: ['8 × r = 8r', '17 − 8r = s']},
-  {id: '8b', nr: '8', deel: 'b', ctx: 'c8', dom: D5g, vraag: ['In de formules A, B en C staat een aftrekking.', 'Schrijf ze als een formule met een optelling.', 'Bijvoorbeeld: 10 + -2r = s'], type: 'formule', aantal: 3, labels: ['A', 'B', 'C'],
-   origs: ['14 - 4*r = s', '5*r - 20 = s', '17 - 8*r = s'], orig: '14 - 4*r = s', vars: ['r'], alleenPlus: true,
-   hint: ['Min een getal is hetzelfde als plus een negatief getal.', '14 − 4r wordt 14 + −4r.'], uitleg: ['A: 14 + −4r = s', 'B: 5r + −20 = s', 'C: 17 + −8r = s']},
-  {id: '8c', nr: '8', deel: 'c', ctx: 'c8', dom: D5g, vraag: ['Schrijf formule A op twee andere manieren.', 'F:14 − 4 × r = s'], type: 'formule', aantal: 2, orig: '14 - 4*r = s', vars: ['r'], nietKort: true,
-   hint: ['Je mag het deel met r naar voren halen.', 'Je mag ook beginnen met s =.'], uitleg: ['Bijvoorbeeld: −4r + 14 = s', 'Of: s = 14 − 4 × r']},
   {id: '8dA', nr: '8', deel: 'd  A', ctx: 'c8', dom: D45, vraag: ['Vul in formule A r = −4 in.', 'Bereken s.'], type: 'stappen', begin: '14 − 4 × r = s',
    velden: [{tpl: '14 − 4 × {} = s', ans: [-4], invul: true}, {tpl: '14 − {} = s', ans: [-16]}, {tpl: '14 + {} = {}', ans: [16, 30]}],
    hint: ['4 × −4 = −16', 'Min een negatief getal is hetzelfde als plus.'], uitleg: ['4 × −4 = −16', '14 − −16 = 14 + 16', '14 + 16 = 30, dus s = 30'], fouten: {'-2': 'Min min niet omgezet in plus'}},
@@ -695,7 +690,7 @@ const SECTIES = [
 ];
 
 /* ---------- oefentoets: dezelfde vragen, maar in toetsmodus ---------- */
-const TOETS_IDS = ['1ab', '1c', '2', '3a', '3b', '4a', '4c', '4d', '5a', '5b', '5d', '6a', '7a', '7b1', '7b2', '7c', '8aB', '8b', '8dA', 'GT9b', 'GT10c'];
+const TOETS_IDS = ['1ab', '1c', '2', '3a', '3b', '4a', '4c', '4d', '5a', '5b', '5d', '6a', '7a', '7b1', '7b2', '7c', '8aB', '8dA', 'GT9b', 'GT10c'];
 (() => { const alle = SECTIES.flatMap(s => s.items);
   SECTIES.push({id: 'toets', titel: 'Oefentoets', toets: true, items: TOETS_IDS.map(id => { const o = alle.find(i => i.id === id);
     return Object.assign({}, o, {id: 'T' + id, toets: true, bron: o.bron && o.bron.map(b => typeof b === 'string' ? (TOETS_IDS.includes(b) ? 'T' + b : b) : b)}); })}); })();
@@ -1163,8 +1158,8 @@ function startScherm(){
   app.innerHTML = `<div class="scherm" style="grid-row:1/-1">
     <span class="label-domein">VMBO Kader · 2KB · Hoofdstuk 2 Formules</span>
     <h2>H2 Formules – oefenen voor de toets</h2>
-    <p>In deze app oefen je met de opdrachten van de toets:<br>• coördinaten en punten in een assenstelsel<br>• formule, tabel en grafiek bij elkaar zoeken<br>• grafieken aflezen en tekenen, ook met negatieve getallen<br>• formules korter en anders schrijven<br>• vergelijkingen oplossen met terugrekenen</p>
-    <p>Klaar met oefenen?<br>Maak dan de <b>Oefentoets</b>: 21 vragen, zonder hints en met één poging.</p>
+    <p>In deze app oefen je met de opdrachten van de toets:<br>• coördinaten en punten in een assenstelsel<br>• formule, tabel en grafiek bij elkaar zoeken<br>• grafieken aflezen en tekenen, ook met negatieve getallen<br>• formules korter schrijven<br>• vergelijkingen oplossen met terugrekenen</p>
+    <p>Klaar met oefenen?<br>Maak dan de <b>Oefentoets</b>: 20 vragen, zonder hints en met één poging.</p>
     ${terug ? `<div class="analyse"><b>Welkom terug, ${esc(S.naam)}!</b><br>Je hebt al ${VRAGEN.filter(v => S.items[v.id] && S.items[v.id].opgelost).length} opdrachten af.${S.code ? `<br>Jouw code: <b class="code">${esc(S.code)}</b>` : ''}
       <div class="knoppen"><button class="knop hoofd" id="verderHier">Verder gaan</button><button class="knop licht" id="andere">Ik ben iemand anders</button></div></div>` : ''}
     <div class="startkeuze" ${terug ? 'hidden' : ''} id="startkeuze">
