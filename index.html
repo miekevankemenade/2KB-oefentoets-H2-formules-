@@ -663,34 +663,10 @@ const SECTIES = [
    velden: [{tpl: '17 − 8 × {} = s', ans: [-4], invul: true}, {tpl: '17 − {} = s', ans: [-32]}, {tpl: '17 + {} = {}', ans: [32, 49]}],
    hint: ['8 × −4 = −32', 'Min een negatief getal is hetzelfde als plus.'], uitleg: ['8 × −4 = −32', '17 − −32 = 17 + 32', '17 + 32 = 49, dus s = 49'], fouten: {'-15': 'Min min niet omgezet in plus'}},
  ]},
- {id: 's4', titel: 'GT9 en GT10', items: [
-  {id: 'GT9a', nr: 'GT9', deel: 'a', ctx: 'c9', dom: D5v, vraag: ['Los op:', 'F:3 × p − 12 = −21', 'Pijlenketting: p → × 3 → … → − 12 → −21', 'Reken terug.'], type: 'stappen',
-   velden: [{tpl: 'Terug: −21 + 12 = {}', ans: [-9]}, {tpl: '{} : 3 = {}', ans: [-9, -3]}, {tpl: 'De oplossing is p = {}', ans: [-3]}],
-   hint: ['Terugrekenen: − 12 wordt + 12.', '× 3 wordt : 3.', 'Negatief gedeeld door positief is negatief.'], uitleg: ['−21 + 12 = −9', '−9 : 3 = −3', 'p = −3', 'Controle: 3 × −3 − 12 = −9 − 12 = −21. Klopt!'], fouten: {'-33': 'Terug − 12 niet omgedraaid naar + 12', 3: 'Min-teken vergeten'}},
-  {id: 'GT9b', nr: 'GT9', deel: 'b', ctx: 'c9', dom: D5v, vraag: ['Los op:', 'F:8 − 4 × p = 10', 'Pijlenketting: p → × −4 → … → + 8 → 10', 'Reken terug.'], type: 'stappen',
-   velden: [{tpl: 'Terug: 10 − 8 = {}', ans: [2]}, {tpl: '{} : −4 = {}', ans: [2, -0.5]}, {tpl: 'De oplossing is p = {}', ans: [-0.5]}],
-   hint: ['Terugrekenen: + 8 wordt − 8.', '× −4 wordt : −4.', 'Positief gedeeld door negatief is negatief.'], uitleg: ['10 − 8 = 2', '2 : −4 = −0,5', 'p = −0,5', 'Controle: 8 − 4 × −0,5 = 8 + 2 = 10. Klopt!'], fouten: {0.5: 'Min-teken vergeten', '-2': 'Gedeeld in de verkeerde volgorde'}},
-  {id: 'GT9c', nr: 'GT9', deel: 'c', ctx: 'c9', dom: D5v, vraag: ['Los op:', 'F:−7 − p = 19', 'Pijlenketting: p → × −1 → … → − 7 → 19', 'Reken terug.'], type: 'stappen',
-   velden: [{tpl: 'Terug: 19 + 7 = {}', ans: [26]}, {tpl: '{} : −1 = {}', ans: [26, -26]}, {tpl: 'De oplossing is p = {}', ans: [-26]}],
-   hint: ['− p is hetzelfde als × −1.', 'Terugrekenen: − 7 wordt + 7.'], uitleg: ['19 + 7 = 26', '26 : −1 = −26', 'p = −26', 'Controle: −7 − −26 = −7 + 26 = 19. Klopt!'], fouten: {26: 'Min-teken vergeten', 12: 'Terug − 7 niet omgedraaid naar + 7'}},
-  {id: 'GT9d', nr: 'GT9', deel: 'd', ctx: 'c9', dom: D5v, vraag: ['Los op:', 'F:4 × (p − 3) = 24', 'Pijlenketting: p → − 3 → … → × 4 → 24', 'Reken terug.'], type: 'stappen',
-   velden: [{tpl: 'Terug: 24 : 4 = {}', ans: [6]}, {tpl: '{} + 3 = {}', ans: [6, 9]}, {tpl: 'De oplossing is p = {}', ans: [9]}],
-   hint: ['Eerst gebeurt − 3, daarna × 4.', 'Terug begin je bij het laatste: × 4 wordt : 4.'], uitleg: ['24 : 4 = 6', '6 + 3 = 9', 'p = 9', 'Controle: 4 × (9 − 3) = 4 × 6 = 24. Klopt!'], fouten: {3: 'Terug − 3 niet omgedraaid naar + 3', 7: 'Eerst + 3, dan : 4 gerekend'}},
-  {id: 'GT10a', nr: 'GT10', deel: 'a', ctx: 'c10', dom: D5v, vraag: ['De kaars brandt een aantal uren.', 'Dan is de kaars 18 cm hoog.', 'Welke vergelijking hoort hierbij?'], type: 'mk',
-   opties: ['24 − 1,5a = 18', '24 − 1,5 × 18 = h', '18 − 1,5a = 24', '24 − 18 = a'], ans: 0,
-   hint: ['De hoogte h is 18.', 'Zet 18 op de plek van h.'], uitleg: ['h = 18', 'Vul 18 in op de plek van h.', '24 − 1,5a = 18']},
-  {id: 'GT10b', nr: 'GT10', deel: 'b', ctx: 'c10', dom: D5v, vraag: ['Los op:', 'F:24 − 1,5a = 18', 'Pijlenketting: a → × −1,5 → … → + 24 → 18', 'Reken terug.'], type: 'stappen',
-   velden: [{tpl: 'Terug: 18 − 24 = {}', ans: [-6]}, {tpl: '{} : −1,5 = {}', ans: [-6, 4]}, {tpl: 'De oplossing is a = {}', ans: [4]}],
-   hint: ['Terugrekenen: + 24 wordt − 24.', '× −1,5 wordt : −1,5.', 'Negatief gedeeld door negatief is positief.'], uitleg: ['18 − 24 = −6', '−6 : −1,5 = 4', 'a = 4', 'Controle: 24 − 1,5 × 4 = 24 − 6 = 18. Klopt!'], fouten: {'-4': 'Min gedeeld door min is plus'}},
-  {id: 'GT10c', nr: 'GT10', deel: 'c', ctx: 'c10', dom: D5v, vraag: ['De kaars is helemaal opgebrand.', 'Kies de vergelijking die hierbij hoort.', 'Los de vergelijking op.'], type: 'stappen',
-   velden: [{lab: 'Vergelijking:', soort: 'keuze', opties: ['kies…', '24 − 1,5a = 0', '24 − 1,5a = 24', '24 − 1,5 × 0 = h'], ans: 1},
-            {tpl: 'Terug: 0 − 24 = {}', ans: [-24]}, {tpl: '{} : −1,5 = {}', ans: [-24, 16]}, {tpl: 'De oplossing is a = {}', ans: [16]}],
-   hint: ['Opgebrand: de hoogte is 0 cm.', '−24 : −1,5: min gedeeld door min is plus.', '1,5 × 16 = 24'], uitleg: ['Opgebrand: h = 0, dus 24 − 1,5a = 0.', '0 − 24 = −24', '−24 : −1,5 = 16', 'a = 16. Na 16 uur is de kaars opgebrand.']},
- ]},
 ];
 
 /* ---------- oefentoets: dezelfde vragen, maar in toetsmodus ---------- */
-const TOETS_IDS = ['1ab', '1c', '2', '3a', '3b', '4a', '4c', '4d', '5a', '5b', '5d', '6a', '7a', '7b1', '7b2', '7c', '8aB', '8dA', 'GT9b', 'GT10c'];
+const TOETS_IDS = ['1ab', '1c', '2', '3a', '3b', '4a', '4c', '4d', '5a', '5b', '5d', '6a', '7a', '7b1', '7b2', '7c', '8aB', '8dA'];
 (() => { const alle = SECTIES.flatMap(s => s.items);
   SECTIES.push({id: 'toets', titel: 'Oefentoets', toets: true, items: TOETS_IDS.map(id => { const o = alle.find(i => i.id === id);
     return Object.assign({}, o, {id: 'T' + id, toets: true, bron: o.bron && o.bron.map(b => typeof b === 'string' ? (TOETS_IDS.includes(b) ? 'T' + b : b) : b)}); })}); })();
@@ -1158,8 +1134,8 @@ function startScherm(){
   app.innerHTML = `<div class="scherm" style="grid-row:1/-1">
     <span class="label-domein">VMBO Kader · 2KB · Hoofdstuk 2 Formules</span>
     <h2>H2 Formules – oefenen voor de toets</h2>
-    <p>In deze app oefen je met de opdrachten van de toets:<br>• coördinaten en punten in een assenstelsel<br>• formule, tabel en grafiek bij elkaar zoeken<br>• grafieken aflezen en tekenen, ook met negatieve getallen<br>• formules korter schrijven<br>• vergelijkingen oplossen met terugrekenen</p>
-    <p>Klaar met oefenen?<br>Maak dan de <b>Oefentoets</b>: 20 vragen, zonder hints en met één poging.</p>
+    <p>In deze app oefen je met de opdrachten van de toets:<br>• coördinaten en punten in een assenstelsel<br>• formule, tabel en grafiek bij elkaar zoeken<br>• grafieken aflezen en tekenen, ook met negatieve getallen<br>• formules korter schrijven</p>
+    <p>Klaar met oefenen?<br>Maak dan de <b>Oefentoets</b>: 18 vragen, zonder hints en met één poging.</p>
     ${terug ? `<div class="analyse"><b>Welkom terug, ${esc(S.naam)}!</b><br>Je hebt al ${VRAGEN.filter(v => S.items[v.id] && S.items[v.id].opgelost).length} opdrachten af.${S.code ? `<br>Jouw code: <b class="code">${esc(S.code)}</b>` : ''}
       <div class="knoppen"><button class="knop hoofd" id="verderHier">Verder gaan</button><button class="knop licht" id="andere">Ik ben iemand anders</button></div></div>` : ''}
     <div class="startkeuze" ${terug ? 'hidden' : ''} id="startkeuze">
