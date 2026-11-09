@@ -153,6 +153,12 @@ input.asvak{position:absolute;width:9.5%;height:6.2%;min-height:0;padding:0 1px;
 input.asvak:focus{outline:none;box-shadow:0 0 0 3px var(--roze-licht)}
 input.asvak.goed{border-color:var(--goed);background:#eaf8f1} input.asvak.fout{border-color:var(--fout);background:#fdeced}
 @media (max-width:860px){.as-wrap{width:100%}}
+#puntMelding{min-height:2.9em;display:flex;align-items:center;justify-content:center}
+.graf-knoppen{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.knop.gum{display:inline-flex;align-items:center;gap:6px}
+.knop.gum[aria-pressed="true"]{background:var(--roze);border-color:var(--roze);color:#fff}
+.knop.gum[aria-pressed="true"] svg path.vul{fill:#fff}
+svg.graf.gum-aan{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M16.2 3.6a2 2 0 0 1 2.8 0l3.4 3.4a2 2 0 0 1 0 2.8L12 20.2H7.4L2.6 15.4a2 2 0 0 1 0-2.8z' fill='%23E924D5' stroke='%235E0696' stroke-width='1.2'/%3E%3C/svg%3E") 4 22,pointer}
 .graf-uitleg{font-size:14px;color:var(--zacht);text-align:center;max-width:520px}
 video{width:100%;max-width:820px;border-radius:14px;background:#000;box-shadow:0 8px 30px rgba(94,6,150,.18)}
 .theorie-tekst{background:var(--cyaan-licht);border-radius:16px;padding:18px 20px;margin:12px 0}
@@ -471,7 +477,7 @@ function maakGrafiek(cfg, opties = {}){
       const r = spook.querySelector('rect'); r.setAttribute('display', 'none'); r.setAttribute('x', bx); r.setAttribute('y', by); r.setAttribute('width', bw); r.setAttribute('height', 28);
       t.setAttribute('x', bx + 7); t.setAttribute('y', by + 19);
     };
-    vang.addEventListener('pointermove', ev => toonSpook(naarPunt(ev)));
+    vang.addEventListener('pointermove', ev => toonSpook(opties.gum && opties.gum() ? null : naarPunt(ev)));
     vang.addEventListener('pointerleave', () => toonSpook(null));
     const teken = () => {
       laag.innerHTML = '';
@@ -493,16 +499,24 @@ function maakGrafiek(cfg, opties = {}){
     };
     const wissel = (px, py) => {
       const pts = opties.punt(); const i = pts.findIndex(p => p[0] === px && p[1] === py);
-      if (i >= 0) pts.splice(i, 1); else pts.push([px, py]);
+      const gum = opties.gum && opties.gum(), meld = opties.melding || (() => {});
+      if (gum){ if (i < 0) return meld('Klik met de gum op een punt om het weg te halen.'); pts.splice(i, 1); meld('Punt weggehaald.'); }
+      else if (opties.gum){ if (i >= 0) return meld('Dit punt staat er al. Wil je het weghalen? Klik eerst op de gum.'); pts.push([px, py]); meld(''); }
+      else { if (i >= 0) pts.splice(i, 1); else pts.push([px, py]); }
       teken(); opties.bijWijziging && opties.bijWijziging();
     };
     vang.addEventListener('click', ev => {
       if (opties.slot && opties.slot()) return;
-      const p = naarPunt(ev); if (!p) return; wissel(p[0], p[1]); toonSpook(p);
+      const p = naarPunt(ev); if (!p) return; wissel(p[0], p[1]); toonSpook(opties.gum && opties.gum() ? null : p);
     });
     svg._teken = teken; svg._wissel = wissel; svg._snap = [snx, sny]; teken();
   }
   svg._X = X; svg._Y = Y; svg._W = W; svg._H = H; svg._as = [ax, ay];
+  svg._naar = ev => { const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    const q = pt.matrixTransform(svg.getScreenCTM().inverse()); const sx = cfg.snapX || 1, sy = cfg.snapY || 1;
+    const vx = x0 + (q.x - m.l) / (W - m.l - m.r) * (x1 - x0), vy = y0 + (H - m.b - q.y) / (H - m.t - m.b) * (y1 - y0);
+    const px = Math.round(vx / sx) * sx, py = Math.round(vy / sy) * sy;
+    return (px < x0 || px > x1 || py < y0 || py > y1) ? null : [px, py]; };
   return svg;
 }
 
@@ -553,7 +567,7 @@ const F8 = [['A', '14 − 4 × r = s'], ['B', '5 × r − 20 = s'], ['C', '17 �
 
 const CTX = {
   c1: {intro: ['Je tekent punten in een assenstelsel.'], graf: () => maakGrafiek(GK1)},
-  c1c: {intro: ['PQRS is een ruit.'], graf: grafK1},
+  c1c: {intro: ['PQRS is een ruit.', 'Je ziet de punten P, Q en R.', 'Punt S moet je nog vinden.'], graf: () => maakGrafiek(GK1, {lijnen: [{pts: [PK1[0], PK1[1], PK1[2]], kleur: PAARS}], letters: [[-1, -2, 'P', 9, 20], [1, 1, 'Q', 10, 6], [-1, 4, 'R', -6, -12]]})},
   c2: {intro: ['Een punt heeft twee coördinaten.', 'Bijvoorbeeld (−3, 2).'], graf: () => maakGrafiek(GK1, {letters: [[-3, 2, 'A', -24, -8]]})},
   c3: {intro: ['Gegeven zijn de volgende formules.', 'F:A:   10 − 3x = y', 'F:B:   3x + 10 = y', 'F:C:   6x − 1 = y', 'F:D:   6(x + 1) − 5 = y', 'In het assenstelsel zijn twee grafieken getekend: grafiek 1 en grafiek 2.'], graf: grafK3},
   c4: {intro: ['De thermostaat in de koelkast van Andres staat niet goed ingesteld.', 'Andres heeft de temperatuur een aantal uren bijgehouden.', 'Het resultaat staat in de tabel.', '12:00 uur \'s middags is tijd = 0.'],
@@ -576,9 +590,9 @@ const SECTIES = [
    type: 'grafiek', g: GK1, pts: PK1, volgorde: 'klik', sluit: true, min: 4,
    hint: ['P(−1, −2): 1 hokje naar links en 2 hokjes omlaag.', 'In een ruit zijn alle zijden even lang.', 'Van Q naar R ga je 2 naar links en 3 omhoog. Van P naar S ook.'],
    uitleg: ['P: 1 naar links, 2 omlaag.', 'Q: 1 naar rechts, 1 omhoog.', 'R: 1 naar links, 4 omhoog.', 'S: 3 naar links, 1 omhoog.'], fouten: {}},
-  {id: '1c', nr: '1', deel: 'c', ctx: 'c1c', dom: D6c, vraag: ['Schrijf de coördinaten van punt S op.', 'Typ een min als -.'], type: 'stappen',
+  {id: '1c', nr: '1', deel: 'c', ctx: 'c1c', dom: D6c, vraag: ['Teken in het assenstelsel de diagonalen van de ruit.', 'Daarmee vind je punt S.', 'Schrijf de coördinaten van punt S op.', 'Typ een min als -.'], type: 'stappen', tekenen: true,
    velden: [{tpl: 'S( {} , {} )', ans: [-3, 1]}],
-   hint: ['Eerst het getal op de horizontale as.', 'Dan het getal op de verticale as.'], uitleg: ['S ligt 3 hokjes links van de verticale as.', 'S ligt 1 hokje boven de horizontale as.', 'S(−3, 1)']},
+   hint: ['Teken eerst de diagonaal van P naar R.', 'De diagonalen snijden elkaar precies in het midden. Dat is het punt (−1, 1).', 'Teken de lijn van Q door het midden. S ligt even ver aan de andere kant.', 'Eerst het getal op de horizontale as, dan het getal op de verticale as.'], uitleg: ['S ligt 3 hokjes links van de verticale as.', 'S ligt 1 hokje boven de horizontale as.', 'S(−3, 1)']},
   {id: '2', nr: '2', deel: '', ctx: 'c2', dom: D6c, vraag: ['Vul in.'], type: 'stappen',
    velden: [{lab: 'A: Als de eerste coördinaat negatief is, dan ligt het punt …', soort: 'keuze', opties: ['kies…', 'links van de verticale as', 'rechts van de verticale as', 'boven de horizontale as', 'onder de horizontale as'], ans: 1},
             {lab: 'B: Als de tweede coördinaat negatief is, dan ligt het punt …', soort: 'keuze', opties: ['kies…', 'links van de verticale as', 'rechts van de verticale as', 'boven de horizontale as', 'onder de horizontale as'], ans: 4}],
@@ -596,7 +610,7 @@ const SECTIES = [
    hint: ['13:00 uur is 1 uur na 12:00 uur.', 'Zoek tijd = 1 in de tabel.'], uitleg: ['13:00 uur is tijd = 1.', 'Bij tijd = 1 hoort −3 °C.'], fouten: {3: 'Min-teken vergeten', '-2': 'Verkeerde kolom in de tabel'}},
   {id: '4c', nr: '4', deel: 'c', ctx: 'c4', dom: D42, vraag: ['De thermostaat moet de temperatuur tussen 4 °C en 6 °C houden.', 'Vanaf welke tijd is de temperatuur goed?', 'Geef het tijdstip op de klok.'], type: 'tijd', ans: '14:00',
    hint: ['Zoek in de tabel waar de temperatuur 4 °C wordt en zo blijft.', 'Reken die tijd om naar een tijd op de klok.'], uitleg: ['Bij tijd = −2 is het ook 4 °C, maar daarna wordt het weer kouder.', 'Vanaf tijd = 2 blijft het 4 °C.', 'tijd = 2 is 14:00 uur.'], fouten: {'10:00': 'Eerste keer 4 °C gekozen, maar daarna daalt de temperatuur weer', '2:00': 'Tijd in de tabel als klokuur gelezen'}},
-  {id: '4d', nr: '4', deel: 'd', ctx: 'c4', dom: D43t, vraag: ['Teken de grafiek bij de tabel.', 'Zet alle punten uit de tabel.', 'De punten worden vanzelf verbonden.', 'Verkeerd punt?', 'Klik er nog een keer op.'], type: 'grafiek', g: GK4, pts: PK4, volgorde: 'x', min: 9, bron: [TK4],
+  {id: '4d', nr: '4', deel: 'd', ctx: 'c4', dom: D43t, vraag: ['Teken de grafiek bij de tabel.', 'Zet alle punten uit de tabel.', 'De punten worden vanzelf verbonden.', 'Verkeerd punt?', 'Gebruik de gum.'], type: 'grafiek', g: GK4, pts: PK4, volgorde: 'x', min: 9, bron: [TK4],
    hint: ['Begin bij het punt (−4, 0).', 'Negatieve temperatuur: onder de horizontale as.'], uitleg: ['(−4, 0), (−3, −2), (−2, 4)', '(−1, 2), (0, −1), (1, −3)', '(2, 4), (3, 4), (4, 4)']},
  ]},
  {id: 's2', titel: 'Opdracht 5 t/m 7', items: [
@@ -623,7 +637,7 @@ const SECTIES = [
   {id: '7b1', nr: '7', deel: 'b ①', ctx: 'c7', dom: D42, vraag: ['Je gaat een grafiek tekenen bij de formule.', 'Maak eerst een tabel.', 'Neem voor de hoogte de getallen 0 tot en met 6.', 'Typ een min als -.'], type: 'tabel',
    kop: ['hoogte in km', 'temperatuur in °C'], xs: [0, 1, 2, 3, 4, 5, 6], ans: [20, 14, 8, 2, -4, -10, -16],
    hint: ['Vul elke hoogte in de formule in.', '20 − 6 × 1 = …', 'Elke km komt er 6 af.'], uitleg: ['0 km: 20 − 0 = 20', '1 km: 20 − 6 = 14', 'Elke keer 6 eraf: 8, 2, −4, −10, −16']},
-  {id: '7b2', nr: '7', deel: 'b ②', ctx: 'c7', dom: D43t, vraag: ['Teken de grafiek bij de formule.', 'Gebruik je tabel.', 'Klik op minstens 3 punten.', 'Verkeerd punt?', 'Klik er nog een keer op.'], type: 'grafiek', g: GK7, f: f7, min: 3, bron: ['7b1'],
+  {id: '7b2', nr: '7', deel: 'b ②', ctx: 'c7', dom: D43t, vraag: ['Teken de grafiek bij de formule.', 'Gebruik je tabel.', 'Klik op minstens 3 punten.', 'Verkeerd punt?', 'Gebruik de gum.'], type: 'grafiek', g: GK7, f: f7, min: 3, bron: ['7b1'],
    hint: ['Begin bij het punt (0, 20).', 'Negatieve temperatuur: onder de horizontale as.'], uitleg: ['Punt (0, 20)', 'Punt (3, 2)', 'Punt (6, −16)', 'Trek een rechte lijn door de punten.']},
   {id: '7c', nr: '7', deel: 'c', ctx: 'c7g', dom: D46, vraag: ['De temperatuur is −7 °C.', 'Lees uit de grafiek af welke hoogte hierbij hoort.', 'Controleer je antwoord met de formule.'], type: 'stappen',
    velden: [{tpl: 'Bij −7 °C hoort een hoogte van {} km.', ans: [4.5]}, {tpl: 'Controle: 20 − 6 × 4,5 = 20 − {} = {}', ans: [27, -7]}],
@@ -807,14 +821,23 @@ function toonVraag(it){
   if (it.type === 'grafiek'){
     s.invoer = s.invoer || [];
     const toetsFout = it.toets && S.toetsKlaar && s.opgelost && !s.toetsGoed;
-    const svg = maakGrafiek(it.g, {interactief: true, punt: () => s.invoer, slot: () => s.opgelost, bijWijziging: bewaar, volgorde: it.volgorde, sluitBij: it.sluit ? it.min : 0,
+    let gumAan = false;
+    const svg = maakGrafiek(it.g, {interactief: true, punt: () => s.invoer, slot: () => s.opgelost, bijWijziging: bewaar,
+      gum: () => gumAan, melding: t => { const m = document.getElementById('puntMelding'); if (m) m.textContent = t; }, volgorde: it.volgorde, sluitBij: it.sluit ? it.min : 0,
       lijnen: (it.vast || []).concat(toetsFout ? [it.pts ? {pts: it.sluit ? it.pts.concat([it.pts[0]]) : it.pts, kleur: '#16965A'} : {f: it.f, kleur: '#16965A'}] : []),
       kleurPunt: (x, y) => s.opgelost && (!it.toets || (S.toetsKlaar && s.toetsGoed)) ? '#16965A' : '#5E0696'});
     links.appendChild(svg);
-    links.insertAdjacentHTML('beforeend', `<div class="graf-uitleg">Klik op het rooster om een punt te zetten.<br>Klik er nog een keer op om het weg te halen.</div>
+    links.insertAdjacentHTML('beforeend', `<div class="graf-uitleg">Klik op het rooster om een punt te zetten.<br>Verkeerd punt? Klik op de gum en dan op dat punt.</div>
       <div class="graf-uitleg" id="puntMelding" role="status"></div>
-      <button class="knop licht" id="wis">Alles wissen</button>`);
-    $('#wis').onclick = () => { if (s.opgelost) return; s.invoer.length = 0; svg._teken(); bewaar(); };
+      <div class="graf-knoppen">
+        <button class="knop licht gum" id="gum" type="button" aria-pressed="false" title="Gum: haal één punt weg"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path class="vul" d="M16.2 3.6a2 2 0 0 1 2.8 0l3.4 3.4a2 2 0 0 1 0 2.8L12 20.2H7.4L2.6 15.4a2 2 0 0 1 0-2.8z" fill="#E924D5"/><path d="M9 9.2l6.2 6.2" stroke="#5E0696" stroke-width="2"/><path d="M13 20.2h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Gum</span></button>
+        <button class="knop licht" id="wis" type="button">Alles wissen</button>
+      </div>`);
+    const zetGum = aan => { gumAan = aan; const g = $('#gum'); g.setAttribute('aria-pressed', aan); g.querySelector('span').textContent = aan ? 'Gum aan' : 'Gum'; svg.classList.toggle('gum-aan', aan);
+      $('#puntMelding').textContent = aan ? 'De gum staat aan. Klik op het punt dat weg moet.' : ''; };
+    $('#gum').onclick = () => { if (s.opgelost) return; zetGum(!gumAan); };
+    $('#wis').onclick = () => { if (s.opgelost) return; s.invoer.length = 0; svg._teken(); bewaar(); zetGum(false); };
+    if (s.opgelost){ $('#gum').disabled = true; $('#wis').disabled = true; }
     if (it.bron) toonBronTabellen(it);
   } else if (it.graf){ links.appendChild(it.graf()); }
   else if (ctx.graf){ links.appendChild(ctx.graf()); }
@@ -860,6 +883,7 @@ function toonVraag(it){
     }
   }
   if (it.type === 'stappen' && it.velden.some(v => v.as)) zetAsVakken(it);
+  if (it.tekenen) zetTekenvel(it, s);
   herstelInvoer(it, s);
   $('#controleer').onclick = () => controleer(it);
   $('#hintKnop').onclick = () => toonHint(it);
@@ -869,6 +893,43 @@ function toonVraag(it){
   toonBerekeningen(it);
 }
 
+// tekenvel: zelf lijnen tekenen (hulp, telt niet mee voor de punten)
+function zetTekenvel(it, s){
+  const svg = document.querySelector('#links svg.graf'); if (!svg) return;
+  const ns = 'http://www.w3.org/2000/svg', X = svg._X, Y = svg._Y;
+  s.lijnen = s.lijnen || []; let start = null, gum = false;
+  const laag = document.createElementNS(ns, 'g'); svg.appendChild(laag);
+  const vang = document.createElementNS(ns, 'rect'); Object.entries({x: 0, y: 0, width: svg._W, height: svg._H, fill: 'transparent'}).forEach(([k, v]) => vang.setAttribute(k, v));
+  svg.insertBefore(vang, laag); svg.style.touchAction = 'manipulation';
+  const meld = t => { const m = document.getElementById('tekenMelding'); if (m) m.textContent = t; };
+  const mk = (tag, at) => { const e = document.createElementNS(ns, tag); Object.entries(at).forEach(([k, v]) => e.setAttribute(k, v)); laag.appendChild(e); return e; };
+  const teken = () => { laag.innerHTML = '';
+    s.lijnen.forEach((l, i) => {
+      mk('line', {x1: X(l[0]), y1: Y(l[1]), x2: X(l[2]), y2: Y(l[3]), stroke: '#E924D5', 'stroke-width': 3.5, 'stroke-linecap': 'round', 'stroke-dasharray': '10 6'});
+      const raak = mk('line', {x1: X(l[0]), y1: Y(l[1]), x2: X(l[2]), y2: Y(l[3]), stroke: 'transparent', 'stroke-width': 18, 'data-i': i, style: gum ? 'cursor:pointer' : 'pointer-events:none'});
+      raak.addEventListener('click', ev => { ev.stopPropagation(); if (!gum) return; s.lijnen.splice(i, 1); bewaar(); teken(); meld('Lijn weggehaald.'); });
+    });
+    if (start) mk('circle', {cx: X(start[0]), cy: Y(start[1]), r: 8, fill: 'none', stroke: '#E924D5', 'stroke-width': 3});
+  };
+  vang.addEventListener('click', ev => {
+    if (gum) return meld('Klik met de gum op een lijn om hem weg te halen.');
+    const p = svg._naar(ev); if (!p) return;
+    if (!start){ start = p; meld('Klik nu op het eindpunt van de lijn.'); }
+    else if (start[0] === p[0] && start[1] === p[1]){ start = null; meld(''); }
+    else { s.lijnen.push([start[0], start[1], p[0], p[1]]); start = null; bewaar(); meld('Lijn getekend.'); }
+    teken();
+  });
+  document.getElementById('links').insertAdjacentHTML('beforeend', `<div class="graf-uitleg">Teken een lijn: klik op het beginpunt en dan op het eindpunt.<br>Deze tekening is een hulp. Hij telt niet mee.</div>
+    <div class="graf-uitleg" id="tekenMelding" role="status" style="min-height:1.6em"></div>
+    <div class="graf-knoppen">
+      <button class="knop licht gum" id="tGum" type="button" aria-pressed="false" title="Gum: haal één lijn weg"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path class="vul" d="M16.2 3.6a2 2 0 0 1 2.8 0l3.4 3.4a2 2 0 0 1 0 2.8L12 20.2H7.4L2.6 15.4a2 2 0 0 1 0-2.8z" fill="#E924D5"/><path d="M9 9.2l6.2 6.2" stroke="#5E0696" stroke-width="2"/><path d="M13 20.2h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Gum</span></button>
+      <button class="knop licht" id="tWis" type="button">Alles wissen</button>
+    </div>`);
+  const zetGum = aan => { gum = aan; start = null; const g = document.getElementById('tGum'); g.setAttribute('aria-pressed', aan); g.querySelector('span').textContent = aan ? 'Gum aan' : 'Gum'; svg.classList.toggle('gum-aan', aan); meld(aan ? 'De gum staat aan. Klik op de lijn die weg moet.' : ''); teken(); };
+  document.getElementById('tGum').onclick = () => zetGum(!gum);
+  document.getElementById('tWis').onclick = () => { s.lijnen.length = 0; bewaar(); zetGum(false); };
+  teken();
+}
 // invulvakjes direct op de as van het assenstelsel
 function zetAsVakken(it){
   const svg = document.querySelector('#links svg.graf'); if (!svg) return;
